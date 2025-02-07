@@ -11,11 +11,22 @@ class Video {
     constructor(videoElement, playlistUrl) {
         if (!this.#isSupported()) return;
         this.video = videoElement;
+        this.playlistUrl = playlistUrl;
         this.loadingSpinner = document.querySelector('.loading-spinner');
 
-        this.#setHls(playlistUrl);
+        this.#setHls();
         this.controller = new Controller(this.hls, this.video, this.loadingSpinner);
         this.#addLoadingEvent();
+    }
+
+    setPlayButton(thumbnailBoxElement, playButtonElement) {
+        this.thumbnail = thumbnailBoxElement;
+        this.playButton = playButtonElement;
+
+        this.playButton.addEventListener('click', () => {
+            this.#initPlay();
+        }, {once : true})
+
     }
 
     #addLoadingEvent() {
@@ -35,14 +46,43 @@ class Video {
     #isSupported() {
         return Hls.isSupported();
     }
-    #setHls(playlistUrl) {
+    #setHls() {
         this.hls = new Hls({
             debug: true,  // 디버깅을 위해 추가
-            levelLoadingTimeOut: 10000,  // 타임아웃 설정
-        });
+            playlistLoadPolicy: {
+                default: {
+                    // 첫 번째 바이트를 받을 때까지 기다리는 최대 시간 (10초)
+                    maxTimeToFirstByteMs: 10000,
 
-        this.hls.loadSource(playlistUrl);
+                    // 전체 로딩이 완료될 때까지 기다리는 최대 시간 (10초)
+                    maxLoadTimeMs: 10000,
+
+                    // 타임아웃 발생 시 재시도 설정
+                    timeoutRetry: {
+                        maxNumRetry: 2,      // 최대 2번 재시도
+                        retryDelayMs: 0,     // 재시도 사이의 대기 시간 없음
+                        maxRetryDelayMs: 0   // 최대 대기 시간 제한 없음
+                    },
+
+                    // 에러 발생 시 재시도 설정
+                    errorRetry: {
+                        maxNumRetry: 3,      // 최대 3번 재시도
+                        retryDelayMs: 1000,  // 재시도 전 1초 대기
+                        maxRetryDelayMs: 8000 // 재시도 간 최대 대기 시간 8초
+                    }
+                }
+            }
+        });
+    }
+
+    #initPlay() {
+        this.hls.loadSource(this.playlistUrl);
         this.hls.attachMedia(this.video);
+
+        this.thumbnail.remove();
+        this.controller.panel.classList.remove(DISABLED);
+        this.controller.panel.classList.add('active');
+        this.play();
     }
 
     initialEventListener() {
@@ -125,7 +165,6 @@ class Controller {
 
     }
 }
-
 class VideoPlayPause {
 
     constructor(video, panel, playPauseBtnElement, playPauseEventElement) {
@@ -524,6 +563,10 @@ window.addEventListener('load', () => {
 
     const video = new Video(videoElement, playlistUrl);
 
+    video.setPlayButton(
+        document.querySelector('.thumbnail-box'),
+        document.querySelector('#playButton')
+    );
     video.controller.setPanel(
         document.querySelector('.panel')
     );
