@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비디오 업로드</title>
+    <link rel="stylesheet" href="/css/upload.css">
+    <script src="/js/upload.js"></script>
+</head>
+<body>
+<div class="upload-container">
+
+    <h1>비디오 업로드</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label>제목</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label>비디오 파일</label>
+            <label for="video" class="file-label">비디오 선택</label>
+            <input type="file" id="video" name="video" class="input-file" accept="video/*" required>
+            <div class="selected-file" id="videoName"></div>
+            <div class="preview" id="videoPreview">
+                <video class="video-preview" controls></video>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>썸네일 이미지</label>
+            <label for="thumbnail" class="file-label">썸네일 선택</label>
+            <input type="file" id="thumbnail" name="thumbnail" class="input-file" accept="image/*" required>
+            <div class="selected-file" id="thumbnailName"></div>
+            <div class="preview" id="thumbnailPreview">
+                <img class="thumbnail-preview">
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">업로드</button>
+    </form>
+</div>
+</body>
+</html>

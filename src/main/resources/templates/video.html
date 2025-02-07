@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Player</title>
+    <link rel="stylesheet" href="/css/video.css">
+    <script type="module" src="/js/hls1.4.10.js"></script>
+    <script type="module" src="/js/video.js"></script>
+</head>
+<body>
+<div class="video-container">
+    <div class="video-wrapper">
+        <video id="videoPlayer" crossorigin="anonymous" th:aria-id="${videoId}"></video>
+        <div class="panel active">
+            <div class="play-pause-event">
+                <svg class="animate-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
+            </div>
+            <div class="loading-spinner">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"/>
+                </svg>
+            </div>
+            <div class="controller">
+                <div class="timeline">
+                    <div class="buffer-progress"></div>
+                    <div class="progress"></div>
+                </div>
+                <div class="control-box">
+                    <div class="left-control-box">
+                        <button class="play-pause" aria-keyshortcuts="space">
+                            <svg class="animate-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
+                        </button>
+                        <div class="time-display">0:00 / 0:00</div>
+                        <div class="volume-container">
+                            <button class="volume-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                            </button>
+                            <div class="volume-slider">
+                                <div class="volume-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-control-box">
+                        <div class="quality-container">
+                            <button class="quality-btn">720p</button>
+                            <div class="quality-options disabled">
+                                <button data-quality="3">1080p</button>
+                                <button data-quality="2">720p</button>
+                                <button data-quality="1">480p</button>
+                                <button data-quality="0">360p</button>
+                            </div>
+                        </div>
+                        <button class="fullscreen">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M136 32c13.3 0 24 10.7 24 24s-10.7 24-24 24L48 80l0 88c0 13.3-10.7 24-24 24s-24-10.7-24-24L0 56C0 42.7 10.7 32 24 32l112 0zM0 344c0-13.3 10.7-24 24-24s24 10.7 24 24l0 88 88 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 480c-13.3 0-24-10.7-24-24L0 344zM424 32c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-88-88 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0zM400 344c0-13.3 10.7-24 24-24s24 10.7 24 24l0 112c0 13.3-10.7 24-24 24l-112 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l88 0 0-88z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

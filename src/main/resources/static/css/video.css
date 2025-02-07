@@ -1,0 +1,273 @@
+.video-container * {
+    box-sizing: border-box;
+}
+
+.video-container button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+}
+.video-container .disabled {
+    display: none;
+}
+.video-container button > svg {
+    pointer-events: none;
+    fill: white;
+}
+.video-container svg {
+    width: 20px;;
+    height: 20px;
+}
+
+
+.video-container {
+    max-width: 800px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 12px;
+    /* background: black; */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#videoPlayer {
+    width: 100%;
+    display: block;
+}
+
+.panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.2) 40%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+    align-content: end;
+}
+
+.panel:hover, .panel.active {
+    opacity: 1;
+}
+
+.controller {
+    padding: 20px 10px 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.timeline {
+    position: relative;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+/* 로드된 세그먼트를 표시할 요소 추가 */
+.buffer-progress {
+    position: absolute;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    width: 0;
+}
+
+.progress {
+    position: absolute;
+    height: 100%;
+    background: #ff0000;
+    border-radius: 3px;
+    width: 0;
+    z-index: 1;  /* 버퍼 프로그레스 위에 표시 */
+}
+
+
+
+.control-box{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.left-control-box, .right-control-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress {
+    height: 100%;
+    background: #ff0000;
+    border-radius: 3px;
+    width: 0;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+}
+.volume-container:hover .volume-slider {
+    width: 60px;
+}
+
+.volume-slider {
+    transition: width 0.2s ease-in-out;
+    width: 0px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.volume-progress {
+    height: 100%;
+    background: #fff;
+    border-radius: 3px;
+    width: 100%;
+}
+
+.time-display {
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.quality-container {
+    position: relative;
+}
+
+.quality-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 14px;
+    width: initial !important;
+}
+
+.quality-options {
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    padding: 5px 0;
+    margin-bottom: 5px;
+    z-index: 2;
+}
+
+.quality-options button {
+    display: block;
+    width: 100%;
+    padding: 5px 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.quality-options button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.animate-icon {
+    animation: iconFade 0.3s ease-out;
+}
+
+@keyframes iconFade {
+    from {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.play-pause-event {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+}
+.play-pause-event svg {
+    fill: white;
+}
+.play-pause-event.active {
+    animation: scaleAndFade 0.7s ease-out forwards;
+}
+
+@keyframes scaleAndFade {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.7);
+        opacity: 0;
+    }
+
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    /*background: rgba(0, 0, 0, 0.4);*/
+    /*border-radius: 100%;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-spinner svg {
+    width: 30px;
+    height: 30px;
+    fill: white;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
