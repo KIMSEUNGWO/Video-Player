@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Video {
 
-    @Id @GeneratedValue
-    private Long id;
+    @Id
     private String videoId;
     private String title;
+    private String thumbnail;
 
 }

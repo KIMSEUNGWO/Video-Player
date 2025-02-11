@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class ResponseVideoList {
+public class ResponseVideo {
 
     private final String videoId;
+    private final String thumbnail;
     private final String title;
 }

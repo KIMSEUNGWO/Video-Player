@@ -50,12 +50,14 @@ async function fetchPost(url, formData) {
             method : 'POST',
             body: formData
         })
-        if (response.ok) {
-            const result = await response.text();
-            alert('업로드 성공!');
-        } else {
-            alert('업로드 실패');
-        }
+            .then(res => res.json())
+            .then(json => {
+                console.log(json);
+                let key = json.statusKey;
+                let message = json.message;
+                alert(message);
+                window.location.href = '/status?q=' + key;
+        })
     } catch (e) {
         console.error('Error:', e);
         alert('업로드 중 오류가 발생했습니다.');

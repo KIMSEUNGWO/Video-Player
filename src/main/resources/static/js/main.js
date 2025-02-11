@@ -1,5 +1,4 @@
 window.addEventListener('load', () => {
-    const videoList = document.querySelector('#videoList');
 
     /**
      * {
@@ -12,15 +11,7 @@ window.addEventListener('load', () => {
      *      ]
      * }
      */
-    fetchGet('/api/v1/videos', (json) => {
-
-        let list = json;
-        list.forEach(data => {
-            let videoLi = generateVideoLi(data.videoId, data.title);
-            videoList.appendChild(videoLi);
-            addEvent(videoLi);
-        });
-    });
+    fetchGet('/api/v1/videos');
 })
 
 function addEvent(videoLi) {
@@ -30,26 +21,47 @@ function addEvent(videoLi) {
     });
 }
 
-function fetchGet(url, callback) {
+function fetchGet(url) {
+    const videoList = document.querySelector('#videoList');
+
     fetch(url)
         .then(res => res.json())
-        .then(data => callback(data));
+        .then(json => {
+            json.forEach(data => {
+                let videoLi = generateVideoLi(data.videoId, data.thumbnail, data.title);
+                videoList.appendChild(videoLi);
+                addEvent(videoLi);
+            });
+        });
 }
 
-function generateVideoLi(videoId, title) {
+function generateVideoLi(videoId, thumbnail, title) {
     let li = document.createElement('li');
     li.className = 'videoLi';
     li.setAttribute('aria-id', videoId);
 
+    let thumbnailDiv = generateThumbnailElement(thumbnail, title);
+    li.appendChild(thumbnailDiv);
+
+    let description = generateDescription(title);
+    li.appendChild(description);
+
+    return li;
+}
+
+function generateThumbnailElement(thumbnailId, title) {
     let thumbnailDiv = document.createElement('div');
     thumbnailDiv.className = 'thumbnail';
 
     let img = document.createElement('img');
-    img.src = '/thumbnail/' + videoId + '.jpg';
+    img.src = '/thumbnail/' + thumbnailId;
     img.alt = title;
 
     thumbnailDiv.appendChild(img);
+    return thumbnailDiv;
+}
 
+function generateDescription(title) {
     let description = document.createElement('div');
     description.className = 'description';
 
@@ -58,9 +70,5 @@ function generateVideoLi(videoId, title) {
     span.innerHTML = title;
 
     description.appendChild(span);
-
-    li.appendChild(thumbnailDiv);
-    li.appendChild(description);
-
-    return li;
+    return description;
 }

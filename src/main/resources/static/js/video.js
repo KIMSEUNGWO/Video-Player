@@ -8,14 +8,14 @@ const DISABLED = 'disabled';
 
 class Video {
 
-    constructor(videoElement, playlistUrl) {
+    constructor(videoElement, playlistUrl, panelElement) {
         if (!this.#isSupported()) return;
         this.video = videoElement;
         this.playlistUrl = playlistUrl;
         this.loadingSpinner = document.querySelector('.loading-spinner');
 
         this.#setHls();
-        this.controller = new Controller(this.hls, this.video, this.loadingSpinner);
+        this.controller = new Controller(this.hls, this.video, this.loadingSpinner, panelElement);
         this.#addLoadingEvent();
     }
 
@@ -101,17 +101,15 @@ class Video {
 
 class Controller {
 
-    constructor(hls, video, loadingSpinner) {
+    constructor(hls, video, loadingSpinner, panelElement) {
         this.hls = hls;
         this.video = video;
         this.loadingSpinner = loadingSpinner;
-    }
-
-    setPanel(panelElement) {
         this.panel = panelElement;
     }
+
     setQuality(qualityBtnElement, qualityOptionsBox) {
-        this.quality = new VideoQuality(qualityBtnElement, qualityOptionsBox);
+        this.quality = new Quality(qualityBtnElement, qualityOptionsBox);
 
         // 화질 최초 선택
         this.hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
@@ -136,16 +134,16 @@ class Controller {
 
     }
     setVolume(volumeBtn, volumeSlider, volumeProgress) {
-        this.volume = new VideoVolume(this.video, volumeBtn, volumeSlider, volumeProgress);
+        this.volume = new Volume(this.video, volumeBtn, volumeSlider, volumeProgress);
     }
     setPlayPauseBtn(playPauseBtnElement, playPauseEventElement) {
-        this.playPause = new VideoPlayPause(this.video, this.panel, playPauseBtnElement, playPauseEventElement);
+        this.playPause = new PlayPause(this.video, this.panel, playPauseBtnElement, playPauseEventElement);
     }
     setFullScreen(fullscreenBtnElement) {
-        this.fullScreen = new VideoFullScreen(this.video, fullscreenBtnElement);
+        this.fullScreen = new FullScreen(this.video, fullscreenBtnElement);
     }
     setTimeline(timelineElement, progressElement, timeDisplay) {
-        this.timeline = new VideoTimeline(this.video, timelineElement, progressElement, timeDisplay);
+        this.timeline = new Timeline(this.video, timelineElement, progressElement, timeDisplay);
     }
 
     initialDependenciesEventListener() {
@@ -165,7 +163,7 @@ class Controller {
 
     }
 }
-class VideoPlayPause {
+class PlayPause {
 
     constructor(video, panel, playPauseBtnElement, playPauseEventElement) {
         this.video = video;
@@ -226,6 +224,7 @@ class VideoPlayPause {
 
         this.playPauseEvent.classList.add('active');
 
+        // 애니메이션이 700ms 이기 때문에 700으로 설정
         this.activeTimer = setTimeout(() => {
             this.playPauseEvent.classList.remove('active');
             this.activeTimer = null;
@@ -259,7 +258,7 @@ class VideoPlayPause {
     }
 
 }
-class VideoQuality {
+class Quality {
 
     constructor(qualityBtnElement, qualityOptionsBox) {
         this.qualityBtn = qualityBtnElement;
@@ -349,7 +348,7 @@ class VideoQuality {
 
 
 }
-class VideoVolume {
+class Volume {
 
     constructor(video, volumeBtn, volumeSlider, volumeProgress) {
         this.video = video;
@@ -442,7 +441,7 @@ class VideoVolume {
 
 
 }
-class VideoTimeline {
+class Timeline {
 
     constructor(video, timelineElement, progressElement, timeDisplay) {
         this.video = video;
@@ -526,7 +525,7 @@ class VideoTimeline {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 }
-class VideoFullScreen {
+class FullScreen {
 
     constructor(video, fullscreenBtn) {
         this.video = video;
@@ -561,14 +560,15 @@ window.addEventListener('load', () => {
     const videoId = videoElement.getAttribute('aria-id');
     const playlistUrl = `/videos/${videoId}/master.m3u8`;
 
-    const video = new Video(videoElement, playlistUrl);
+    const video = new Video(
+        videoElement,
+        playlistUrl,
+        document.querySelector('.panel')
+    );
 
     video.setPlayButton(
         document.querySelector('.thumbnail-box'),
         document.querySelector('#playButton')
-    );
-    video.controller.setPanel(
-        document.querySelector('.panel')
     );
     video.controller.setQuality(
         document.querySelector('.quality-btn'),

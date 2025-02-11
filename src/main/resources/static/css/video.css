@@ -96,7 +96,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-
 }
 
 .timeline {
@@ -106,7 +105,21 @@
     cursor: pointer;
     border-radius: 3px;
     overflow: hidden;
+    transition: height 0.15s ease-in-out;
 }
+.timeline:hover {
+    height: 8px;
+}
+/* 타임라인 끝지점 원형 */
+/* .timeline .progress::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    color: #d81c1c;
+    position: absolute;
+    right: 0;
+} */
 
 /* 로드된 세그먼트를 표시할 요소 추가 */
 .buffer-progress {
@@ -137,13 +150,6 @@
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.progress {
-    height: 100%;
-    background: #ff0000;
-    border-radius: 3px;
-    width: 0;
 }
 
 .volume-container {

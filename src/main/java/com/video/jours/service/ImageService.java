@@ -1,33 +1,35 @@
 package com.video.jours.service;
 
+import com.video.jours.component.DirectoryHelper;
+import com.video.jours.dto.VideoDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
-    @Value("${image.directory}")
-    private String imageDirectory;
+    private final DirectoryHelper directoryHelper;
 
-    public void uploadThumbnail(String videoId, MultipartFile thumbnail) {
-        try {
-            int index = thumbnail.getOriginalFilename().lastIndexOf(".");
-            String extension = thumbnail.getOriginalFilename().substring(index);
+    public void uploadThumbnail(MultipartFile thumbnail, VideoDto videoDto) throws IOException {
+        String extension = getFileExtension(thumbnail.getOriginalFilename());
 
-            String originalFilePath = imageDirectory + "/" + videoId + extension;
-            File originalFile = new File(originalFilePath);
-            if (!originalFile.exists()) {
-                originalFile.mkdirs();
-            }
-            thumbnail.transferTo(originalFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        Path thumbnailPath = directoryHelper.generateOnlyPath(() ->
+            directoryHelper.getThumbnailPath(videoDto.newRandomThumbnail(extension))
+        );
+
+        Files.copy(thumbnail.getInputStream(), thumbnailPath);
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || filename.lastIndexOf(".") == -1) {
+            return ".jpg"; // 기본 확장자 설정
         }
+        return filename.substring(filename.lastIndexOf("."));
     }
 }

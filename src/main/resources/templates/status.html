@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <span id="status"></span>
+
+</body>
+
+<script>
+    const status = document.querySelector('#status');
+    const param = new URLSearchParams(window.location.search);
+    const videoId = param.get('q');
+
+    function polling() {
+        return setInterval(() => {
+            fetch(`/api/v1/videos/status?q=${videoId}`)
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    status.innerHTML = json.status;
+                })
+                .catch(error => stopPolling(pollingNum))
+        }, 1000);
+    }
+    function stopPolling(pollingNum) {
+        clearInterval(pollingNum);
+    }
+    let pollingNum = polling();
+</script>
+</html>
