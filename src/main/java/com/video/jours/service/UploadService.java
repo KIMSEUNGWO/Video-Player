@@ -84,10 +84,8 @@ public class UploadService {
                 pathManager.get(VIDEO, pathManager.generateNewPath())
             ).getFileName().toString();
 
-            VideoStatus status = null;
             try {
-                status = findStatus
-                    .orElseThrow(() -> new RuntimeException("statusKey not found"));
+                VideoStatus status = findStatus.orElseThrow(() -> new RuntimeException("statusKey not found"));
 
                 videoService.generateHls(videoId, status);
                 entityService.saveVideoEntity(videoId, status);
@@ -101,7 +99,7 @@ public class UploadService {
                 });
             } finally {
                 findStatus.ifPresent(videoStatus -> {
-                        directoryManager.delete(ORIGINAL_VIDEO, videoStatus.getOriginalVideo());
+                    directoryManager.delete(ORIGINAL_VIDEO, videoStatus.getOriginalVideo());
                 });
             }
         };

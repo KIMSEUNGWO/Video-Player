@@ -38,7 +38,6 @@ public class VideoService {
         return originalVideoFilePath.getFileName().toString();
     }
 
-    // 원본 영상을 서버에 저장해놓고 Thread로 HLS 변환 작업하는 로직을 작성중임
     public void generateHls(String videoId, VideoStatus status) throws IOException {
         threadTransactionManager.updateStatus(status, PROCESSING);
 
