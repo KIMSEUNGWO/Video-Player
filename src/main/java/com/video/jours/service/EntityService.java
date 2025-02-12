@@ -4,9 +4,11 @@ import com.video.jours.dto.VideoUploadRequest;
 import com.video.jours.dto.ResponseVideo;
 import com.video.jours.dto.VideoDto;
 import com.video.jours.entity.Video;
+import com.video.jours.entity.VideoStatus;
 import com.video.jours.repository.VideoJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,11 +18,12 @@ public class EntityService {
 
     private final VideoJpaRepository videoJpaRepository;
 
-    public void saveVideoEntity(VideoDto videoDto, VideoUploadRequest videoUploadRequest) {
+    @Transactional
+    public void saveVideoEntity(String videoId, VideoStatus status) {
         Video saveVideo = Video.builder()
-            .title(videoUploadRequest.title())
-            .videoId(videoDto.getVideoId())
-            .thumbnail(videoDto.getThumbnail())
+            .title(status.getTitle())
+            .videoId(videoId)
+            .thumbnail(status.getThumbnail())
             .build();
         videoJpaRepository.save(saveVideo);
     }
@@ -36,7 +39,7 @@ public class EntityService {
     }
 
     public ResponseVideo findByVideoId(String videoId) {
-        return videoJpaRepository.findById(videoId)
+        return videoJpaRepository.findByVideoId(videoId)
             .map(video -> ResponseVideo.builder()
                 .title(video.getTitle())
                 .videoId(video.getVideoId())

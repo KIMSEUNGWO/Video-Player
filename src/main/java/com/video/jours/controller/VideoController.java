@@ -3,7 +3,7 @@ package com.video.jours.controller;
 import com.video.jours.dto.ResponseVideo;
 import com.video.jours.dto.ResponseVideoStatus;
 import com.video.jours.service.EntityService;
-import com.video.jours.service.StatusCache;
+import com.video.jours.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +16,12 @@ import java.util.List;
 public class VideoController {
 
     private final EntityService entityService;
-    private final StatusCache statusCache;
+    private final StatusRepository statusRepository;
 
 
     @GetMapping("/videos/status")
     public ResponseEntity<ResponseVideoStatus> getVideoStatus(@RequestParam(name = "q") String videoId) {
-        return statusCache.get(videoId)
+        return statusRepository.findById(videoId)
             .map(videoStatus -> ResponseEntity.ok(new ResponseVideoStatus(videoStatus.getStatus().name())))
             .orElse(ResponseEntity.notFound().build());
     }

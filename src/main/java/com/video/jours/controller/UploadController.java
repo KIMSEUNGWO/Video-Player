@@ -1,7 +1,6 @@
 package com.video.jours.controller;
 
 import com.video.jours.dto.VideoUploadRequest;
-import com.video.jours.dto.VideoDto;
 import com.video.jours.dto.VideoUploadResponse;
 import com.video.jours.service.UploadService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,8 @@ public class UploadController {
 
     @PostMapping("/upload")
     public ResponseEntity<VideoUploadResponse> upload(@ModelAttribute VideoUploadRequest videoUploadRequest) {
-        String statusKey = uploadService.upload(videoUploadRequest);
+        String statusKey = uploadService.uploadSchedule(videoUploadRequest);
+        uploadService.upload(statusKey);
         return ResponseEntity.ok(new VideoUploadResponse(statusKey, "Video upload started"));
     }
 }

@@ -1,7 +1,6 @@
 package com.video.jours.service;
 
-import com.video.jours.component.DirectoryHelper;
-import com.video.jours.dto.VideoDto;
+import com.video.jours.component.path.PathManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,20 +9,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.video.jours.component.path.PathType.*;
+
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final DirectoryHelper directoryHelper;
+    private final PathManager pathManager;
 
-    public void uploadThumbnail(MultipartFile thumbnail, VideoDto videoDto) throws IOException {
+    public String uploadThumbnail(MultipartFile thumbnail) throws IOException {
         String extension = getFileExtension(thumbnail.getOriginalFilename());
 
-        Path thumbnailPath = directoryHelper.generateOnlyPath(() ->
-            directoryHelper.getThumbnailPath(videoDto.newRandomThumbnail(extension))
+        Path thumbnailPath = pathManager.generateOnlyPath(() ->
+            pathManager.get(THUMBNAIL, pathManager.generateNewPath(extension))
         );
 
         Files.copy(thumbnail.getInputStream(), thumbnailPath);
+        return thumbnailPath.getFileName().toString();
     }
 
     private String getFileExtension(String filename) {

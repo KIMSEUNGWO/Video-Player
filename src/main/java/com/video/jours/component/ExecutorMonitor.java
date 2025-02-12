@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
@@ -19,7 +18,7 @@ public class ExecutorMonitor {
     private final ThreadPoolExecutor videoExecutor;
     private final BlockingQueue<Runnable> videoQueue;
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 3000)
     public void monitorVideo() {
         // 현재 처리중인 스레드 수와 큐에 남은 처리 수 확인
         log.info("처리중인 스레드 수 : {}, 대기중인 스레드 수 : {}", videoExecutor.getActiveCount(), videoQueue.size());

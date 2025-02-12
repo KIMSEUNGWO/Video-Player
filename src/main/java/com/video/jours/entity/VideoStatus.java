@@ -1,17 +1,33 @@
 package com.video.jours.entity;
 
+import com.video.jours.enums.ProcessingStatus;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 public class VideoStatus {
 
-    private final String statusKey;
-    private ProcessingStatus status;
-    private String errorMessage;
+    @Id
+    private String statusKey;
 
-    public enum ProcessingStatus {
-        PENDING, PROCESSING, COMPLETED, FAILED
-    }
+    @Enumerated(EnumType.STRING)
+    private ProcessingStatus status;
+
+    private String thumbnail;
+    private String originalVideo;
+    private String title;
+
+    private String errorMessage;
 
     public VideoStatus(String statusKey) {
         this.statusKey = statusKey;

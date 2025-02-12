@@ -1,10 +1,12 @@
 package com.video.jours.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.*;
 
+@Slf4j
 @Configuration
 public class ExecutorConfig {
 
@@ -15,12 +17,24 @@ public class ExecutorConfig {
 
     @Bean
     public ThreadPoolExecutor videoExecutor() {
-        return new ThreadPoolExecutor(
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
             2, // 코어 스레드 수
             2, // 최대 스레드 수
-            0L, // 놀고 있는 스레드가 종료되기 전 대기 시간
+            0L,
             TimeUnit.MILLISECONDS,
-            videoQueue() // 작업 큐
+            videoQueue(),
+            new ThreadPoolExecutor.CallerRunsPolicy() // 거부된 작업 처리 정책 추가
         );
+
+        // 예외 모니터링 추가
+        executor.setThreadFactory(r -> {
+            Thread t = new Thread(r);
+            t.setUncaughtExceptionHandler((thread, e) -> {
+                log.error("Thread {} threw exception: {}", thread.getName(), e.getMessage(), e);
+            });
+            return t;
+        });
+
+        return executor;
     }
 }
