@@ -22,11 +22,6 @@ class Video {
     setPlayButton(thumbnailBoxElement, playButtonElement) {
         this.thumbnail = thumbnailBoxElement;
         this.playButton = playButtonElement;
-
-        this.playButton.addEventListener('click', () => {
-            this.#initPlay();
-        }, {once : true})
-
     }
 
     #addLoadingEvent() {
@@ -75,13 +70,9 @@ class Video {
         });
     }
 
-    #initPlay() {
-        this.hls.loadSource(this.playlistUrl);
-        this.hls.attachMedia(this.video);
-
+    #initPlayButtonEvent() {
         this.thumbnail.remove();
         this.controller.panel.classList.remove(DISABLED);
-        this.controller.panel.classList.add('active');
         this.play();
     }
 
@@ -89,8 +80,22 @@ class Video {
         this.controller.initialDependenciesEventListener();
     }
 
-    play() {
-        this.controller.playPause.play();
+    async autoPlay() {
+        this.hls.loadSource(this.playlistUrl);
+        this.hls.attachMedia(this.video);
+
+        if (await this.play()) {
+            this.thumbnail.remove();
+            this.controller.panel.classList.remove(DISABLED);
+        } else {
+            this.playButton.addEventListener('click', () => {
+                this.#initPlayButtonEvent();
+            }, {once : true})
+        }
+    }
+
+    async play() {
+        return await this.controller.playPause.play();
     }
 
     pause() {
@@ -129,7 +134,7 @@ class Controller {
 
         // 화질 변경 이벤트 처리
         this.hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-            this.quality.updateQualityButton(data.level);
+            this.quality.updateQualityButton(data.level, data.levels);
         });
 
     }
@@ -231,10 +236,15 @@ class PlayPause {
         }, 700);
     }
 
-    play() {
-        this.video.play();
-        this.playPauseBtn.innerHTML = this.getPauseSvg();
-        this.playPauseEvent.innerHTML = this.getPauseSvg();
+    async play() {
+        try {
+            let isPlay = await this.video.play();
+            this.playPauseBtn.innerHTML = this.getPauseSvg();
+            this.playPauseEvent.innerHTML = this.getPauseSvg();
+            return isPlay;
+        } catch (e) {
+            return false;
+        }
     }
 
     pause() {
@@ -288,15 +298,13 @@ class Quality {
     }
 
     // 화질 버튼 텍스트 업데이트
-    updateQualityButton(level) {
-        let qualityText = 'AUTO';
 
-        if (level === 0) qualityText = '360p';
-        else if (level === 1) qualityText = '480p';
-        else if (level === 2) qualityText = '720p';
-        else if (level === 3) qualityText = '1080p';
-
-        this.qualityBtn.textContent = qualityText;
+    updateQualityButton(level, levels) {
+        if (level === -1) {
+            this.qualityBtn.textContent = 'AUTO';
+        } else if (levels && level < levels.length) {
+            this.qualityBtn.textContent = levels[level].height + 'p';
+        }
         this.qualityOptionsBox.classList.add(DISABLED);
     }
 
@@ -313,34 +321,37 @@ class Quality {
     }
 
     addEventChangeQuality(hls, playPause, loadingSpinner) {
-
-        // 화질 선택 버튼 이벤트
         const qualityOptions = this.qualityOptionsBox.querySelectorAll('button');
         qualityOptions.forEach(button => {
             button.addEventListener('click', () => {
                 const quality = parseInt(button.getAttribute('data-quality'));
 
-                if (quality === this.currentQuality) {
+                if (quality === hls.currentLevel) {
                     this.qualityOptionsBox.classList.add(DISABLED);
                     return;
                 }
 
-                // 화질 변경 시 로딩 표시만 하고 비디오는 계속 재생
                 loadingSpinner.classList.remove(DISABLED);
 
-                this.currentQuality = quality;
-                hls.nextLevel = quality;  // currentLevel 대신 nextLevel 사용 : 다음 segment 부터 변경된 quality 적용
-                this.updateQualityButton(quality);
+                if (quality === -1) {
+                    // AUTO 모드 활성화
+                    hls.currentLevel = -1;
+                    hls.loadLevel = -1;
+                    hls.config.startLevel = -1;  // 자동 품질 선택
+                } else {
+                    // 수동으로 특정 품질 선택
+                    hls.currentLevel = quality;
+                    hls.loadLevel = quality;
+                }
 
-                const onFragBuffered = (event, data) => {
-                    // -1 : AUTO
-                    if (quality === -1 || data.frag.level === quality) {
-                        loadingSpinner.classList.add(DISABLED);
-                        hls.off(Hls.Events.FRAG_BUFFERED, onFragBuffered);
-                    }
+                this.updateQualityButton(quality, hls.levels);
+
+                const onFragLoaded = (event, data) => {
+                    loadingSpinner.classList.add(DISABLED);
+                    hls.off(Hls.Events.FRAG_LOADED, onFragLoaded);
                 };
 
-                hls.on(Hls.Events.FRAG_BUFFERED, onFragBuffered);
+                hls.on(Hls.Events.FRAG_LOADED, onFragLoaded);
             });
         });
     }
@@ -593,5 +604,8 @@ window.addEventListener('load', () => {
     )
     video.controller.setKeyShortCuts();
     video.initialEventListener();
+    video.autoPlay();
+
+
 
 });
