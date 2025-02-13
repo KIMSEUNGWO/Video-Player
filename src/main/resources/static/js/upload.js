@@ -45,22 +45,27 @@ window.addEventListener('load', function() {
 
 async function fetchPost(url, formData) {
 
-    try {
-        const response = await fetch(url, {
-            method : 'POST',
-            body: formData
+    await fetch(url, {
+        method : 'POST',
+        body: formData
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("HTTP error! status : " + res.status);
+            } else {
+                return res.json();
+            }
         })
-            .then(res => res.json())
-            .then(json => {
-                console.log(json);
-                let key = json.statusKey;
-                let message = json.message;
-                alert(message);
-                window.location.href = '/status?q=' + key;
+        .then(json => {
+            console.log(json);
+            let key = json.statusKey;
+            let message = json.message;
+            alert(message);
+            window.location.href = '/status?q=' + key;
         })
-    } catch (e) {
-        console.error('Error:', e);
-        alert('업로드 중 오류가 발생했습니다.');
-    }
+        .catch(error => {
+            console.error('Error : ' + error);
+            alert('업로드 중 오류가 발생했습니다.');
+        })
 
 }

@@ -18,10 +18,18 @@
     function polling() {
         return setInterval(() => {
             fetch(`/api/v1/videos/status?q=${videoId}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('HTTP Error! status : ' + res.status);
+                    } else {
+                        return res.json();
+                    }
+                })
                 .then(json => {
-                    console.log(json);
                     status.innerHTML = json.status;
+                    if (json.status === 'COMPLETED') {
+                        stopPolling(pollingNum);
+                    }
                 })
                 .catch(error => stopPolling(pollingNum))
         }, 1000);
