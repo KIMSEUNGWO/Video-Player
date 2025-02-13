@@ -1,8 +1,6 @@
 package com.video.jours.service;
 
-import com.video.jours.dto.VideoUploadRequest;
 import com.video.jours.dto.ResponseVideo;
-import com.video.jours.dto.VideoDto;
 import com.video.jours.entity.Video;
 import com.video.jours.entity.VideoStatus;
 import com.video.jours.repository.VideoJpaRepository;

@@ -14,7 +14,7 @@
     <div class="video-wrapper">
         <video id="videoPlayer" crossorigin="anonymous" th:aria-id="${video.getVideoId()}"></video>
         <div class="thumbnail-box">
-            <img class="thumbnail-image" th:src="|/thumbnail/${video.getThumbnail()}|" alt="">
+            <img class="thumbnail-image" th:src="|/thumbnail/${video.getThumbnail()}|" th:alt="${video.getTitle()}">
             <button type="button" id="playButton">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                     <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
@@ -52,13 +52,8 @@
                     </div>
                     <div class="right-control-box">
                         <div class="quality-container">
-                            <button class="quality-btn">720p</button>
-                            <div class="quality-options disabled">
-                                <button data-quality="3">1080p</button>
-                                <button data-quality="2">720p</button>
-                                <button data-quality="1">480p</button>
-                                <button data-quality="0">360p</button>
-                            </div>
+                            <button class="quality-btn"></button>
+                            <div class="quality-options disabled"></div>
                         </div>
                         <button class="fullscreen">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M136 32c13.3 0 24 10.7 24 24s-10.7 24-24 24L48 80l0 88c0 13.3-10.7 24-24 24s-24-10.7-24-24L0 56C0 42.7 10.7 32 24 32l112 0zM0 344c0-13.3 10.7-24 24-24s24 10.7 24 24l0 88 88 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 480c-13.3 0-24-10.7-24-24L0 344zM424 32c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-88-88 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0zM400 344c0-13.3 10.7-24 24-24s24 10.7 24 24l0 112c0 13.3-10.7 24-24 24l-112 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l88 0 0-88z"/></svg>

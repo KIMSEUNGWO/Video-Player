@@ -19,8 +19,12 @@ public class UploadController {
 
     @PostMapping("/upload")
     public ResponseEntity<VideoUploadResponse> upload(@ModelAttribute VideoUploadRequest videoUploadRequest) {
-        String statusKey = uploadService.uploadSchedule(videoUploadRequest);
-        uploadService.upload(statusKey);
-        return ResponseEntity.ok(new VideoUploadResponse(statusKey, "Video upload started"));
+        try {
+            String statusKey = uploadService.uploadSchedule(videoUploadRequest);
+            uploadService.upload(statusKey);
+            return ResponseEntity.ok(new VideoUploadResponse(statusKey, "Video upload started"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new VideoUploadResponse(null, "Video upload failed"));
+        }
     }
 }

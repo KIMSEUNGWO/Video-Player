@@ -29,11 +29,6 @@ public class VideoStatus {
 
     private String errorMessage;
 
-    public VideoStatus(String statusKey) {
-        this.statusKey = statusKey;
-        this.status = ProcessingStatus.PENDING;
-    }
-
     public void updateStatus(ProcessingStatus status) {
         this.status = status;
     }
