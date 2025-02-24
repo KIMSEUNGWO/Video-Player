@@ -7,10 +7,8 @@ import java.nio.file.Path;
 
 public interface DefaultResourceMethod {
 
-    default UrlResource resource(Path path) throws MalformedURLException {
-        return new UrlResource(path.toUri());
+    default UrlResource resource(String url) throws MalformedURLException {
+        return new UrlResource(url);
     }
-    default UrlResource resource(String path) throws MalformedURLException {
-        return new UrlResource("file:".concat(path));
-    }
+
 }

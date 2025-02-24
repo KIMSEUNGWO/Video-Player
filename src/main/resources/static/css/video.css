@@ -35,6 +35,8 @@
 .video-wrapper {
     position: relative;
     width: 100%;
+    aspect-ratio: 16 / 9;
+    display: flex;
 }
 
 #videoPlayer {

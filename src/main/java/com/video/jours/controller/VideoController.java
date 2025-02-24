@@ -2,8 +2,8 @@ package com.video.jours.controller;
 
 import com.video.jours.dto.ResponseVideo;
 import com.video.jours.dto.ResponseVideoStatus;
+import com.video.jours.repository.StatusJpaRepository;
 import com.video.jours.service.EntityService;
-import com.video.jours.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +16,7 @@ import java.util.List;
 public class VideoController {
 
     private final EntityService entityService;
-    private final StatusRepository statusRepository;
-
+    private final StatusJpaRepository statusRepository;
 
     @GetMapping("/videos/status")
     public ResponseEntity<ResponseVideoStatus> getVideoStatus(@RequestParam(name = "q") String videoId) {

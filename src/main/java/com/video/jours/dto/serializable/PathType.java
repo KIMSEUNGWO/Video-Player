@@ -1,4 +1,4 @@
-package com.video.jours.component.path;
+package com.video.jours.dto.serializable;
 
 public enum PathType {
 

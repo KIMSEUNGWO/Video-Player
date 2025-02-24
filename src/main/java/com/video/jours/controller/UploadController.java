@@ -2,6 +2,7 @@ package com.video.jours.controller;
 
 import com.video.jours.dto.VideoUploadRequest;
 import com.video.jours.dto.VideoUploadResponse;
+import com.video.jours.dto.serializable.ConvertRequest;
 import com.video.jours.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,12 @@ public class UploadController {
     @PostMapping("/upload")
     public ResponseEntity<VideoUploadResponse> upload(@ModelAttribute VideoUploadRequest videoUploadRequest) {
         try {
-            String statusKey = uploadService.uploadSchedule(videoUploadRequest);
-            uploadService.upload(statusKey);
-            return ResponseEntity.ok(new VideoUploadResponse(statusKey, "Video upload started"));
+            ConvertRequest request = uploadService.createVideoConvertRequest(videoUploadRequest);
+            uploadService.upload(request);
+            return ResponseEntity.ok(VideoUploadResponse.success(request.getKey(), "Video upload started"));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new VideoUploadResponse(null, "Video upload failed"));
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(VideoUploadResponse.fail("Video upload failed"));
         }
     }
 }

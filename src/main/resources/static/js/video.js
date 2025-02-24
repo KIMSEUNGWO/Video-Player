@@ -569,7 +569,7 @@ class FullScreen {
 window.addEventListener('load', () => {
     const videoElement = document.querySelector('#videoPlayer');
     const videoId = videoElement.getAttribute('aria-id');
-    const playlistUrl = `/videos/${videoId}/master.m3u8`;
+    const playlistUrl = `/play/${videoId}/master.m3u8`;
 
     const video = new Video(
         videoElement,

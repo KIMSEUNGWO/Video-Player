@@ -33,6 +33,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	// Rabbit MQ
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
 	implementation 'net.bramp.ffmpeg:ffmpeg:0.7.0'
 }
 

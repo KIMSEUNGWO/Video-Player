@@ -1,39 +1,37 @@
 package com.video.jours.controller;
 
-import com.video.jours.component.path.PathManager;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.MalformedURLException;
-import java.nio.file.Path;
-
-import static com.video.jours.component.path.PathType.*;
 
 @RestController
-@RequiredArgsConstructor
 public class ResourceController implements DefaultResourceMethod {
 
-    private final PathManager pathManager;
+    @Value("${storage.server.address}")
+    private String storageAddress;
 
     @GetMapping("/thumbnail/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
-        Path thumbnailPath = pathManager.get(THUMBNAIL, filename);
-        return resource(thumbnailPath);
+        return new UrlResource(concat("thumbnail", filename));
     }
 
-    @GetMapping("/videos/{videoId}/{master}.m3u8")
-    public Resource downloadVideo(@PathVariable String videoId, @PathVariable String master) throws MalformedURLException {
-        String playlistPath = pathManager.get(VIDEO, videoId) + "/" + master + ".m3u8";
-        return resource(playlistPath);
+    @GetMapping("/play/{videoId}/master.m3u8")
+    public Resource downloadVideo(@PathVariable String videoId) throws MalformedURLException {
+        return new UrlResource(concat("video", videoId, "master.m3u8"));
     }
 
-    @GetMapping("/videos/{videoId}/{stream}/{segment}")
+    @GetMapping("/play/{videoId}/{stream}/{segment}")
     public Resource downloadPlaylist(@PathVariable String videoId, @PathVariable String stream, @PathVariable String segment) throws MalformedURLException {
-        String segmentPath = pathManager.get(VIDEO, videoId) + "/" + stream + "/" + segment;
-        return resource(segmentPath);
+        return new UrlResource(concat("video", videoId, stream, segment));
+    }
+
+    private String concat(String... urls) {
+        return storageAddress + "/" + String.join("/", urls);
     }
 
 }

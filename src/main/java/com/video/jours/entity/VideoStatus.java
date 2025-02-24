@@ -29,12 +29,4 @@ public class VideoStatus {
 
     private String errorMessage;
 
-    public void updateStatus(ProcessingStatus status) {
-        this.status = status;
-    }
-
-    public void setError(String errorMessage) {
-        this.status = ProcessingStatus.FAILED;
-        this.errorMessage = errorMessage;
-    }
 }
