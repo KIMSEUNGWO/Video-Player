@@ -15,6 +15,11 @@ public class ResourceController implements DefaultResourceMethod {
     @Value("${storage.server.address}")
     private String storageAddress;
 
+    @GetMapping("/key.bin")
+    public Resource downloadKey() throws MalformedURLException {
+        return new UrlResource(concat("key.bin"));
+    }
+
     @GetMapping("/thumbnail/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource(concat("thumbnail", filename));
